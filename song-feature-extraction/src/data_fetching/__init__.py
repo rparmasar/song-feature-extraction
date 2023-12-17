@@ -1,2 +1,4 @@
 from .song_fetching import get_artist_tracks, get_playlist_tracks
-from .search_strategies.artists import ARTIST_ID_MAP
+from .attribute_fetching import get_tracks_attributes
+
+from .search_strategies import ARTIST_ID_MAP

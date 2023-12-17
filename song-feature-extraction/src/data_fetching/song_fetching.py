@@ -1,7 +1,6 @@
 import requests
 from ..auth import SpotifyAuth
 
-from pprint import pprint
 
 def get_artist_tracks(artist_id: str, credentials: SpotifyAuth) -> dict[str, str]:
     """
