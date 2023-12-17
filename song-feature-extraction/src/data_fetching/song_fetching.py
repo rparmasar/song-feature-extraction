@@ -39,15 +39,15 @@ def get_playlist_tracks(playlist_id: str, credentials: SpotifyAuth) -> list[dict
     HAS_PAGES_TO_FETCH = True
 
     # Initial variables
-    TARGET_URL = f"https://api.spotify.com/v1/playlists/{playlist_id}"
+    TARGET_URL = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
     HEADERS = {
         'Authorization': f"Bearer {credentials.access_token}"
     }
     PARAMS = {
         'market': 'US',
-        # 'fields': 'tracks%28next%2Citems%28track%28name%2Cid%2Cartists%28id%2Cname%29%29%29'
-        # 'fields': 'tracks(next,items(track(name,id,artists(id,name)))'
-        'fields': 'tracks(next,items(track(name,id,artists(id,name))))'
+        'fields': 'next,limit,offset,items(track(name,id,artists(id,name)))',
+        'offset': 0,
+        'limit': 100
     }
 
     while HAS_PAGES_TO_FETCH:
@@ -59,7 +59,8 @@ def get_playlist_tracks(playlist_id: str, credentials: SpotifyAuth) -> list[dict
         )
 
         # Get response content
-        response_content = response.json()['tracks']
+        print(f"Fetching from {response.url=}")
+        response_content = response.json()
 
         # Add it to the intermediate list
         track_list.extend(response_content['items'])
@@ -68,7 +69,8 @@ def get_playlist_tracks(playlist_id: str, credentials: SpotifyAuth) -> list[dict
         if response_content['next'] is None:
             HAS_PAGES_TO_FETCH = False
         else:
-            HAS_PAGES_TO_FETCH = True
+            PARAMS['offset'] = response_content['limit'] + PARAMS['offset'] + 1
+            
 
     return track_list
 

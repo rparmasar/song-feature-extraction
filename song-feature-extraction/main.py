@@ -23,11 +23,12 @@ def main():
 
     # print(test)
     test = get_playlist_tracks(
-        playlist_id="0BBqSucRp5ePvhNUSCPAgx",
+        # playlist_id="0BBqSucRp5ePvhNUSCPAgx",
+        playlist_id="6Jq0QdwB0vk7VPcIqpo4pr",
         credentials=current_auth
     )
 
-    with open("playlist-output.json", "w") as jf:
+    with open("playlist-output-paginated.json", "w") as jf:
         json.dump(test, jf, indent=2)
 
 
