@@ -1,7 +1,8 @@
 import requests
 from ..auth import SpotifyAuth
-
-
+from ..data_types import Track, Artist
+from pprint import pprint
+# TODO: Convert this to return a Track
 def get_artist_tracks(artist_id: str, credentials: SpotifyAuth) -> dict[str, str]:
     """
     Returns a dictionary of the top songs for a given artist (Maxes at 10).
@@ -27,7 +28,7 @@ def get_artist_tracks(artist_id: str, credentials: SpotifyAuth) -> dict[str, str
     return parsed_content
 
 
-def get_playlist_tracks(playlist_id: str, credentials: SpotifyAuth) -> list[dict[str, str | dict[str, str]]]:
+def get_playlist_tracks(playlist_id: str, credentials: SpotifyAuth) -> list[Track]:
     """
     Returns a dictionary of all tracks with track name, track id and artists for the track.
     """
@@ -44,7 +45,7 @@ def get_playlist_tracks(playlist_id: str, credentials: SpotifyAuth) -> list[dict
     }
     PARAMS = {
         'market': 'US',
-        'fields': 'next,limit,offset,items(track(name,id,artists(id,name)))',
+        'fields': 'next,limit,offset,items(track(name,id,type,artists(id,name)))',
         'offset': 0,
         'limit': 100
     }
@@ -58,7 +59,7 @@ def get_playlist_tracks(playlist_id: str, credentials: SpotifyAuth) -> list[dict
         )
 
         # Get response content
-        print(f"Fetching from {response.url=}")
+        # print(f"Fetching from {response.url=}")
         response_content = response.json()
 
         # Add it to the intermediate list
@@ -70,8 +71,22 @@ def get_playlist_tracks(playlist_id: str, credentials: SpotifyAuth) -> list[dict
         else:
             PARAMS['offset'] = response_content['limit'] + PARAMS['offset'] + 1
             
+    # Convert output to Track objs
+    def _create_track(track_obj: dict[str, dict[str, str] | str]) -> Track:
+        artists = [Artist(**art) for art in track_obj['artists']]
+        
+        track = Track(
+            id=track_obj["id"],
+            name=track_obj["name"],
+            artists=artists,
+        )
 
-    return track_list
+        return track
+
+    # We need to ignore episode types
+    tracks = [_create_track(track["track"]) for track in track_list if track["track"]["type"] == 'track']
+
+    return tracks
 
         
 

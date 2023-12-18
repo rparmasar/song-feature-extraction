@@ -1,10 +1,10 @@
 import requests
 from ..auth import SpotifyAuth
 
+from ..data_types import TrackAttributes
+
 from pprint import pprint
-
-
-def get_tracks_attributes(tracks_ids: list[str], credentials: SpotifyAuth) -> list[dict[str, int | str]]:
+def get_tracks_attributes(tracks_ids: list[str], credentials: SpotifyAuth) -> list[TrackAttributes]:
     """
     Fetches a dictionary mapping a `track_id` to a dictionary of track attributes like `speechiness` etc.
     """
@@ -21,9 +21,10 @@ def get_tracks_attributes(tracks_ids: list[str], credentials: SpotifyAuth) -> li
     HEADERS = {
         'Authorization': f"Bearer {credentials.access_token}"
     }
+    
     # Call API for each sublist
     for i, chunk in enumerate(chunked_track_ids):
-        print(f"Fetching chunk {i} using the following ids: {chunk}")
+        print(f"Fetching chunk {i} with {len(chunk)} IDs ...")
 
         PARAMS = {
             'ids': ",".join(chunk)
@@ -38,11 +39,18 @@ def get_tracks_attributes(tracks_ids: list[str], credentials: SpotifyAuth) -> li
 
         # Get response content
         response_content = response.json()["audio_features"]
+        
+        # Convert to TrackAttribute Objects
+        track_attributes_objs = [
+            TrackAttributes(**{key: val for (key,val) in track_attrs.items() if key in TrackAttributes.__dataclass_fields__}) 
+            for track_attrs in response_content
+            if track_attrs is not None
+        ]
 
         # Add it to our result list
-        track_attributes.extend(response_content)
+        track_attributes.extend(track_attributes_objs)
 
-    return tracks_ids
+    return track_attributes
 
 
 
