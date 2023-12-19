@@ -1,11 +1,16 @@
 from dataclasses import dataclass, asdict
 from pandas import DataFrame
 from enum import Enum
+from typing import Optional
+
 
 @dataclass
 class Artist:
     id: str
     name: str
+    followers: Optional[int] = None
+    genres: Optional[list[str]] = None
+    popularity: Optional[int] = None
 
 
 @dataclass(kw_only=True)
@@ -22,7 +27,10 @@ class Track:
             'track_id': self.id,
             'track_name': self.name,
             'track_artists_id': ",".join([art.id for art in self.artists]),
-            'track_artists_name': ",".join([art.name for art in self.artists])
+            'track_artists_name': ",".join([art.name for art in self.artists]),
+            'track_artists_followers': ",".join([str(art.followers) for art in self.artists]),
+            # 'track_artists_genres': ",".join([art.genres for art in self.artists]),
+            'track_artists_popularity': ",".join([str(art.popularity) for art in self.artists]),
         }
 
         return res
@@ -51,6 +59,21 @@ class TrackAttributes:
         res_dict[TrackAttributeColumns.ID.value] = res_dict['id']
         del res_dict['id']
         return res_dict
+    
+
+@dataclass
+class TrackMetaData:
+    id: str
+    release_date: str
+    release_date_precision: str
+    popularity: int
+
+    def to_dict(self) -> dict[str, str | int]:
+        res_dict = asdict(self)
+        # Easier for joining later on
+        res_dict[TrackAttributeColumns.ID.value] = res_dict['id']
+        del res_dict['id']
+        return res_dict
 
     
 
@@ -68,6 +91,9 @@ class TrackAttributeColumns(Enum):
     NAME: str = 'track_name'
     ARTISTS_IDS: str = 'artist_ids'
     ARTISTS_NAMES: str = 'artist_names'
+    ARTISTS_FOLLOWERS: int = 'artist_followers'
+    ARTISTS_GENRES: int = 'artist_genres'
+    ARTISTS_POPULARITY: int = 'artist_popularity'
     DANCEABILITY: float = 'danceability'
     ENERGY: float = 'energy'
     KEY: int = 'key'
@@ -81,6 +107,11 @@ class TrackAttributeColumns(Enum):
     TEMPO: float = 'temp'
     DURATION_MS: int = 'duration_ms'
     TIME_SIGNATURE: int = 'time_signature'
+    RELEASE_DATE: str = 'release_date'
+    RELEASE_DATE_PRECISION: str = 'release_date_precision'
+    POPULARITY: int = 'popularity'
+    GENERATED_TIMESTAMP: str = 'generated_timestamp'
+    
 
 
 class Source(Enum):

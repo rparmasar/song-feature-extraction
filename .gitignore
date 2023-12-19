@@ -2,3 +2,4 @@
 **_pycache__/
 env/
 *.csv
+*.DS_Store

@@ -9,5 +9,7 @@ PLAYLIST_ID_MAP = {
     'TRINIBAD': "6Jq0QdwB0vk7VPcIqpo4pr",
     'TRINIDAD DANCEHALL': "33IPZzmY0zMsYqj30spMgE",
     'Trinibad': "3fMXESWznDSrgYOVesXchM",
-    'TRINIBAD D ZESS': "1xXA4q3OJuWmVews66yBW6"
+    'TRINIBAD D ZESS': "1xXA4q3OJuWmVews66yBW6",
+    'Spotify Dancehall Mix': "37i9dQZF1EQqoytXQhz8dz",
+    
 }

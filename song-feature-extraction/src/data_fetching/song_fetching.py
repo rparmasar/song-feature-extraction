@@ -88,8 +88,6 @@ def get_playlist_tracks(playlist_id: str, credentials: SpotifyAuth) -> list[Trac
 
     return tracks
 
-        
-
 
         
 
