@@ -28,6 +28,7 @@ def get_spotify_token(client_id: str, client_secret: str) -> SpotifyAuth:
 
     response = requests.post(URL, headers=HEADERS, data=DATA)
     json_response = response.json()
+    print(json_response)
     
     response_content = SpotifyAuth(
         **{key:val for (key, val) in json_response.items() if key in SpotifyAuth.__dataclass_fields__}
